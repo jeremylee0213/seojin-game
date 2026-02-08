@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Mushroom Worm Quest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Fredoka:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app" id="appRoot">
+      <header class="topbar panel">
+        <div class="title-block">
+          <p class="kicker">NINTENDO STYLE PUZZLE</p>
+          <h1>Mushroom Worm Quest</h1>
+          <p id="subtitleText">젤리, 슈퍼젤리, 스타, 포털을 활용해 미로를 탈출하세요</p>
+        </div>
+        <div class="quick-actions">
+          <button id="startBtn" class="primary">이어하기</button>
+          <button id="levelSelectBtn">레벨 선택 (L)</button>
+          <button id="pauseBtn">일시정지 (P)</button>
+        </div>
+        <aside class="character-showcase" aria-label="현재 캐릭터">
+          <strong id="characterPanelTitle">넘버블럭스 캐릭터</strong>
+          <canvas id="characterPreviewCanvas" width="28" height="28"></canvas>
+          <span id="characterPanelName">하나 · 1번</span>
+          <span id="characterPanelMeta">폼 No.1 · 원형</span>
+          <span class="char-length-ctrl">
+            <button id="charLenMinus" class="char-len-btn" aria-label="캐릭터 길이 줄이기">−</button>
+            <span id="charLenValue" class="char-len-value">1</span>
+            <button id="charLenPlus" class="char-len-btn" aria-label="캐릭터 길이 늘이기">+</button>
+          </span>
+        </aside>
+      </header>
+
+      <section class="hud panel" aria-label="게임 상태">
+        <div class="hud-main">
+          <div class="hud-item emphasized">
+            <span class="hud-label" id="labelLevel">현재 레벨</span>
+            <strong id="hudLevel">-</strong>
+          </div>
+          <div class="hud-item emphasized">
+            <span class="hud-label" id="labelMoves">이동 횟수</span>
+            <strong id="hudMoves">0</strong>
+          </div>
+          <div class="hud-item">
+            <span class="hud-label" id="labelLength">길이</span>
+            <strong id="hudLength">3</strong>
+          </div>
+          <div class="hud-item">
+            <span class="hud-label" id="labelItems">젤리</span>
+            <strong id="hudItems">0 / 0</strong>
+          </div>
+        </div>
+        <details class="hud-details">
+          <summary id="hudDetailsSummary">상세 정보</summary>
+          <div class="hud-sub">
+            <div class="hud-item">
+              <span class="hud-label" id="labelState">상태</span>
+              <strong id="hudState">타이틀</strong>
+            </div>
+            <div class="hud-item">
+              <span class="hud-label" id="labelTheme">테마</span>
+              <strong id="hudTheme">-</strong>
+            </div>
+            <div class="hud-item">
+              <span class="hud-label" id="labelBest">베스트</span>
+              <strong id="hudBest">-</strong>
+            </div>
+            <div class="hud-item">
+              <span class="hud-label" id="labelUnlocked">해금</span>
+              <strong id="hudUnlocked">1 / 10</strong>
+            </div>
+            <div class="hud-item">
+              <span class="hud-label" id="labelDifficulty">난이도</span>
+              <strong id="hudDifficulty">★1</strong>
+            </div>
+            <div class="hud-item">
+              <span class="hud-label" id="labelCharacter">캐릭터</span>
+              <strong id="hudCharacter">No.1</strong>
+            </div>
+            <div class="hud-item">
+              <span class="hud-label" id="labelWorld">월드</span>
+              <strong id="hudWorld">W1-S1</strong>
+            </div>
+            <div class="hud-item hud-debug">
+              <span class="hud-label" id="labelInputLag">입력 지연</span>
+              <strong id="hudInputLag">0ms</strong>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <section class="canvas-panel panel" id="canvasPanel">
+        <canvas id="gameCanvas" width="800" height="600" aria-label="웜 퍼즐 게임 캔버스"></canvas>
+
+        <div id="clearOverlay" class="overlay-menu hidden" aria-label="레벨 클리어">
+          <h2 id="clearTitle">레벨 클리어!</h2>
+          <p id="clearSubtitle" class="clear-subtitle"></p>
+          <button id="clearNextBtn" class="primary">다음 레벨</button>
+          <button id="clearRestartBtn">현재 레벨 재시작</button>
+          <button id="clearTitleBtn">타이틀로 이동</button>
+        </div>
+
+        <div id="pauseMenu" class="overlay-menu hidden" aria-label="일시정지 메뉴">
+          <h2 id="pauseTitle">일시정지</h2>
+          <button id="resumeBtn" class="primary">게임 계속</button>
+          <button id="restartBtn">현재 레벨 재시작 (R)</button>
+          <button id="exitTitleBtn">타이틀로 이동</button>
+        </div>
+
+        <div id="tutorialOverlay" class="tutorial-overlay hidden" aria-label="튜토리얼">
+          <article class="tutorial-card">
+            <p class="tutorial-step" id="tutorialProgress">1 / 5</p>
+            <div class="tutorial-icon" id="tutorialIcon" aria-hidden="true">🎮</div>
+            <h2 id="tutorialTitle">환영합니다</h2>
+            <p id="tutorialBody">키보드 방향키 또는 WASD로 한 칸씩 움직이세요.</p>
+            <p class="tutorial-hint" id="tutorialHint"></p>
+            <div class="tutorial-actions">
+              <button id="tutorialSkipBtn">건너뛰기</button>
+              <button id="tutorialNextBtn" class="primary">다음</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="bottom-row">
+        <section class="controls panel" aria-label="조작 버튼">
+          <button id="nextBtn">다음 레벨 (N)</button>
+          <button id="undoBtn">되돌리기 (Z)</button>
+          <button id="newGameBtn">새 게임</button>
+          <button id="copyReplayBtn">리플레이 복사</button>
+          <div class="level-adjust" aria-label="레벨 조절">
+            <button id="levelPrevStepBtn" type="button">◀ 이전</button>
+            <div class="level-adjust-track">
+              <span id="levelAdjustLabel">레벨 이동</span>
+              <input id="levelJumpRange" type="range" min="1" max="100" step="1" value="1" aria-label="레벨 슬라이더" />
+              <strong id="levelAdjustValue">1 / 100</strong>
+            </div>
+            <button id="levelNextStepBtn" type="button">다음 ▶</button>
+          </div>
+        </section>
+
+        <section class="settings panel" aria-label="설정">
+          <h2 id="settingsTitle">설정</h2>
+
+          <fieldset class="settings-group">
+            <legend id="settingsAudioLegend">🔊 오디오</legend>
+            <div class="toggles">
+              <label><input id="soundToggle" type="checkbox" /> 사운드</label>
+              <label><input id="bgmToggle" type="checkbox" /> <span id="bgmToggleLabel">배경음악</span></label>
+            </div>
+            <div class="setting-grid">
+              <label class="setting-field">
+                <span id="bgmTrackLabel">배경음악 테마</span>
+                <select id="bgmTrackSelect">
+                  <option value="retro">레트로</option>
+                  <option value="arcade">아케이드</option>
+                  <option value="chill">칠</option>
+                </select>
+              </label>
+              <label class="setting-field">
+                <span id="masterVolumeLabel">마스터 볼륨</span>
+                <div class="slider-row">
+                  <input id="masterVolumeRange" type="range" min="0" max="1" step="0.01" value="0.8" />
+                  <strong id="masterVolumeValue">80%</strong>
+                </div>
+              </label>
+              <label class="setting-field">
+                <span id="sfxVolumeLabel">효과음 볼륨</span>
+                <div class="slider-row">
+                  <input id="sfxVolumeRange" type="range" min="0" max="1" step="0.01" value="0.8" />
+                  <strong id="sfxVolumeValue">80%</strong>
+                </div>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset class="settings-group">
+            <legend id="settingsVisualLegend">👁 시각</legend>
+            <div class="toggles">
+              <label><input id="contrastToggle" type="checkbox" /> 고대비</label>
+              <label><input id="motionToggle" type="checkbox" /> 모션 감소</label>
+              <label><input id="colorBlindToggle" type="checkbox" /> 색약 보조 패턴</label>
+              <label><input id="moveHintsToggle" type="checkbox" /> 이동 힌트 화살표</label>
+            </div>
+          </fieldset>
+
+          <fieldset class="settings-group">
+            <legend id="settingsControlLegend">🎮 조작</legend>
+            <div class="toggles">
+              <label><input id="vibrationToggle" type="checkbox" /> 진동</label>
+            </div>
+            <div class="handedness">
+              <span id="handModeLabel">손 모드</span>
+              <label><input type="radio" name="handedness" value="right" checked /> 오른손</label>
+              <label><input type="radio" name="handedness" value="left" /> 왼손</label>
+            </div>
+            <details>
+              <summary id="keybindSummary">키 바인딩</summary>
+              <div class="keybind-grid" id="keybindGrid"></div>
+              <p class="keybind-note" id="keybindNote">
+                입력칸 클릭 후 원하는 키를 누르세요. 비우려면 Backspace.
+              </p>
+            </details>
+          </fieldset>
+
+          <fieldset class="settings-group">
+            <legend id="settingsAdvancedLegend">⚙ 고급</legend>
+            <div class="toggles">
+              <label><input id="perfToggle" type="checkbox" /> 성능 오버레이</label>
+              <label><input id="resetPolicyToggle" type="checkbox" /> 새 게임 시 진행 초기화</label>
+              <label><input id="replayDebugToggle" type="checkbox" /> 리플레이 디버그 패널</label>
+            </div>
+            <div class="setting-grid">
+              <label class="setting-field">
+                <span id="languageLabel">언어</span>
+                <select id="languageSelect">
+                  <option value="ko">한국어</option>
+                  <option value="en">English</option>
+                </select>
+              </label>
+              <label class="setting-field">
+                <span id="perfModeLabel">모바일 성능 모드</span>
+                <select id="perfModeSelect">
+                  <option value="auto">자동</option>
+                  <option value="quality">고화질</option>
+                  <option value="battery">배터리 절약</option>
+                </select>
+              </label>
+            </div>
+          </fieldset>
+        </section>
+      </section>
+
+      <section class="level-select panel" id="levelSelectPanel" aria-label="레벨 선택">
+        <div class="level-header">
+          <h2 id="levelSelectTitle">레벨 선택</h2>
+          <span id="levelSelectSummary">해금: 1 / 10</span>
+        </div>
+        <div id="levelGrid" class="level-grid"></div>
+      </section>
+
+      <section class="replay-debug panel" id="replayDebugPanel" aria-label="리플레이 디버그">
+        <div class="replay-header">
+          <h2 id="replayTitle">리플레이 디버그</h2>
+          <span id="replayStepLabel">Step 0 / 0</span>
+        </div>
+        <canvas id="replayCanvas" width="320" height="240" aria-label="리플레이 미리보기"></canvas>
+        <p id="replayMeta">리플레이 데이터가 없습니다.</p>
+        <input id="replayStepRange" type="range" min="0" max="0" value="0" step="1" />
+        <div class="replay-actions">
+          <button id="replayStepPrevBtn">이전</button>
+          <button id="replayStepNextBtn">다음</button>
+          <button id="replayStepLatestBtn" class="primary">최신</button>
+        </div>
+      </section>
+
+      <section class="mobile-pad panel" id="mobilePad" aria-label="모바일 방향키">
+        <button id="padDragHandle" class="pad-handle" aria-label="방향키 위치 이동">⠿</button>
+        <button class="pad up" data-direction="up" aria-label="위">▲</button>
+        <button class="pad left" data-direction="left" aria-label="왼쪽">◀</button>
+        <div class="pad center" aria-hidden="true"></div>
+        <button class="pad right" data-direction="right" aria-label="오른쪽">▶</button>
+        <button class="pad down" data-direction="down" aria-label="아래">▼</button>
+      </section>
+
+      <section class="help panel" aria-label="조작 안내">
+        <p id="helpText">
+          이동: 방향키/WASD · Undo: Z · Restart: R · Pause: P · 레벨 선택: L · 길게 누르면 연속 이동
+        </p>
+      </section>
+
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    </main>
+
+    <script src="js/constants.js"></script>
+    <script src="js/levels.js"></script>
+    <script src="js/snake.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/renderer.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/gamepad.js"></script>
+    <script src="js/character-preview.js"></script>
+    <script src="js/replay-ui.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "mushroom-worm-quest",
+  "version": "1.0.0",
+  "description": "Nintendo style puzzle game - Mushroom Worm Quest",
+  "private": true,
+  "scripts": {
+    "test": "node scripts/test-core.js && node scripts/validate-levels.js",
+    "test:core": "node scripts/test-core.js",
+    "test:levels": "node scripts/validate-levels.js"
+  },
+  "keywords": ["puzzle", "game", "snake"],
+  "license": "UNLICENSED"
+}
