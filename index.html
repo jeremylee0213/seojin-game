@@ -26,15 +26,13 @@
           <button id="pauseBtn">일시정지 (P)</button>
         </div>
         <aside class="character-showcase" aria-label="현재 캐릭터">
-          <strong id="characterPanelTitle">넘버블럭스 캐릭터</strong>
-          <canvas id="characterPreviewCanvas" width="28" height="28"></canvas>
+          <strong id="characterPanelTitle" hidden>넘버블럭스 캐릭터</strong>
+          <canvas id="characterPreviewCanvas" width="24" height="24"></canvas>
           <span id="characterPanelName">하나 · 1번</span>
-          <span id="characterPanelMeta">폼 No.1 · 원형</span>
-          <span class="char-length-ctrl">
-            <button id="charLenMinus" class="char-len-btn" aria-label="캐릭터 길이 줄이기">−</button>
-            <span id="charLenValue" class="char-len-value">1</span>
-            <button id="charLenPlus" class="char-len-btn" aria-label="캐릭터 길이 늘이기">+</button>
-          </span>
+          <span id="characterPanelMeta" hidden>폼 No.1 · 원형</span>
+          <button id="charLenMinus" class="char-len-btn" aria-label="캐릭터 길이 줄이기">−</button>
+          <span id="charLenValue" class="char-len-value">1</span>
+          <button id="charLenPlus" class="char-len-btn" aria-label="캐릭터 길이 늘이기">+</button>
         </aside>
       </header>
 

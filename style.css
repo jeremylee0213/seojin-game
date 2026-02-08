@@ -113,70 +113,45 @@ body {
 }
 
 .character-showcase {
-  min-width: 120px;
-  padding: 3px 5px;
-  border-radius: 8px;
-  border: 1.5px solid rgba(36, 64, 145, 0.35);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  border: 1px solid rgba(36, 64, 145, 0.3);
   background: linear-gradient(180deg, #ffffff, #eef4ff);
-  display: grid;
-  grid-template-columns: 28px minmax(0, 1fr);
-  grid-template-areas:
-    "canvas name"
-    "canvas meta"
-    "ctrl  ctrl";
-  column-gap: 5px;
-  row-gap: 0;
-}
-
-#characterPanelTitle {
-  display: none;
 }
 
 #characterPreviewCanvas {
-  grid-area: canvas;
-  width: 28px;
-  height: 28px;
-  border-radius: 4px;
-  border: 1px solid rgba(41, 61, 137, 0.34);
+  width: 24px;
+  height: 24px;
+  border-radius: 3px;
+  border: 1px solid rgba(41, 61, 137, 0.3);
   background: linear-gradient(180deg, #f3f9ff, #dceaff);
-  align-self: center;
+  flex-shrink: 0;
 }
 
 #characterPanelName {
-  grid-area: name;
-  font-size: 0.62rem;
+  font-size: 0.58rem;
   font-family: "Baloo 2", "Fredoka", sans-serif;
   font-weight: 800;
   color: #0f2b78;
-  line-height: 1.1;
-  align-self: end;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 #characterPanelMeta {
-  grid-area: meta;
-  font-size: 0.52rem;
-  font-family: "Fredoka", "Baloo 2", sans-serif;
-  color: #2f4dab;
-  align-self: start;
-}
-
-.char-length-ctrl {
-  grid-area: ctrl;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  padding: 1px 0;
+  display: none;
 }
 
 .char-len-btn {
-  width: 18px;
-  height: 18px;
-  border: 1px solid rgba(36, 64, 145, 0.35);
-  border-radius: 4px;
+  width: 16px;
+  height: 16px;
+  border: 1px solid rgba(36, 64, 145, 0.3);
+  border-radius: 3px;
   background: linear-gradient(180deg, #ffffff, #e8efff);
   color: #314aa3;
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   font-weight: 800;
   cursor: pointer;
   display: flex;
@@ -184,7 +159,7 @@ body {
   justify-content: center;
   padding: 0;
   line-height: 1;
-  transition: background 0.15s, transform 0.1s;
+  flex-shrink: 0;
 }
 
 .char-len-btn:hover {
@@ -196,12 +171,13 @@ body {
 }
 
 .char-len-value {
-  font-size: 0.68rem;
+  font-size: 0.58rem;
   font-weight: 800;
   color: #0f2b78;
-  min-width: 18px;
+  min-width: 12px;
   text-align: center;
   font-family: "Baloo 2", "Fredoka", sans-serif;
+  line-height: 1;
 }
 
 .hud {
@@ -1024,8 +1000,7 @@ body.reduce-motion * {
   }
 
   .character-showcase {
-    width: 100%;
-    max-width: 180px;
+    width: auto;
   }
 
   .hud {
